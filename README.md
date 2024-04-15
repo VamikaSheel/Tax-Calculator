@@ -1,0 +1,1 @@
+Tax-Calculator is a web application designed to help users calculate their taxes. It is built using HTML, CSS, and JavaScript, with Bootstrap. Tax-Calculator offers an intuitive interface where users can input their income details and deductions to determine their tax liability. The application features both light and dark modes for user preference.
