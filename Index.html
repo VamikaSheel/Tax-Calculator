@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Calculator</title>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <style>
+    .error-icon {
+      display: none;
+    }
+
+    .error-icon img {
+      width: 20px;
+      position: absolute; 
+      right: 10px;
+      top: 50%; 
+      transform: translateY(-50%); 
+    }
+
+    body {
+      background-color: #f2f2ff; 
+      transition: background-color 0.3s ease;
+      color: #130c24; 
+    }
+
+    .container {
+      background-color: #ffffff; 
+      border-radius: 10px;
+      box-shadow: 5px 5px 15px #d8d8d8, -5px -5px 15px #ffffff;
+      padding: 20px;
+      max-width: 400px; 
+      width: 90%; 
+      margin: 0 auto; 
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-toggle-mode {
+      background-color: #3935ff; 
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .btn-toggle-mode img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .btn-toggle-mode:hover {
+      transform: scale(1.1);
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #0c0c28; 
+      color: #e9e9f9; 
+    }
+
+    .container.dark-mode {
+      background-color: #212141; 
+      box-shadow: 5px 5px 15px #1a1a1a, -5px -5px 15px #242424;
+    }
+
+    /* For Light Theme */
+    .light-mode .form-control {
+      background-color: #e9e9f9 !important; 
+      color: #130c24 !important; 
+      border-color: #e9e9f9 !important; 
+    }
+
+    /* For Dark Theme */
+    .dark-mode .form-control {
+      background-color: #0c0c28 !important; 
+      color: #e9e9f9 !important;
+      border-color: #0c0c28 !important; 
+    }
+
+    .form-control::placeholder {
+
+      color: #999;
+    }
+
+    .form-control,
+    .form-control:focus {
+      background-color: #0c0c28; 
+      border-color: #0c0c28; 
+      position: relative; 
+    }
+
+    /* Light Theme */
+    .light-mode .modal-content {
+      background-color: #ffffff; 
+      color: #130c24; 
+    }
+
+    /* Dark Theme */
+    .dark-mode .modal-content {
+      background-color: #212141; 
+      color: #e9e9f9;
+    }
+
+    .modal-header {
+      border-bottom: none;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-title {
+      color: #5856f3; 
+    }
+
+    .close {
+      display: none; 
+    }
+
+    .btn-primary {
+      background-color: #3935ff; 
+      border-color: #3935ff;
+    }
+
+    .btn-primary:hover {
+      background-color: #5c59fd; 
+      border-color: #5c59fd;
+    }
+
+    /* Title: Dark Mode */
+    .dark-mode h1 {
+      color: #5856f3;
+    }
+
+    /* Columns */
+    .column-light {
+      background-color: #e9e9f9;
+    }
+
+    .column-dark {
+      background-color: #0c0c28; 
+    }
+
+    /* Light Theme */
+    body.light-mode .container .column-light {
+      background-color: #e9e9f9 !important; 
+    }
+
+    /* Dark Theme */
+    body.dark-mode .container .column-dark {
+      background-color: #0c0c28 !important;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- icon button -->
+  <button class="btn btn-toggle-mode" id="toggleModeBtn">
+    <img src="https://i.postimg.cc/c4BMYhGn/4676033-200.png" alt="Toggle Mode icon" />
+    Mode
+  </button>
+
+  <div class="container mt-5 p-4">
+    <h1 class="mb-4">Tax Calculator</h1>
+    <form id="taxForm">
+      <div class="form-group">
+        <label for="income">Enter Gross Annual Income</label>
+        <div style="position: relative;">
+          <input type="text" class="form-control" id="income" required />
+          <div class="error-icon" id="incomeErrorIcon">
+            <img src="https://i.postimg.cc/RhJRQjfR/istockphoto-1044391652-612x612.jpg" alt="Error" title="Income should be a number" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="extraIncome">Enter Extra Income</label>
+        <div style="position: relative;">
+          <input type="text" class="form-control" id="extraIncome" />
+          <div class="error-icon" id="extraIncomeErrorIcon">
+            <img src="https://i.postimg.cc/RhJRQjfR/istockphoto-1044391652-612x612.jpg alt="Error" title="Extra Income should be a number" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="age">Enter Age Group</label>
+        <select class="form-control" id="age" required>
+          <option value="" selected disabled>Select Age Group</option>
+          <option value="<40">&lt; 40</option>
+          <option value=">=40 <60">&ge; 40 &lt; 60</option>
+          <option value=">=60">&ge; 60</option>
+        </select>
+     
+      </div>
+      <div class="form-group">
+        <label for="deductions">Enter the Total Applicable Deductions</label>
+        <div style="position: relative;">
+          <input type="text" class="form-control" id="deductions" />
+          <div class="error-icon" id="deductionsErrorIcon">
+            <img src="https://i.postimg.cc/RhJRQjfR/istockphoto-1044391652-612x612.jpg" alt="Error" title="Deductions should be a number" />
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Calculate Tax</button>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="resultModal"
+    tabindex="-1"
+    aria-labelledby="resultModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultModalLabel">
+            Tax Calculation Result
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="resultBody">
+          <!-- Result-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      
+      $("#toggleModeBtn").click(function () {
+        $("body").toggleClass("dark-mode");
+        $("body").toggleClass("light-mode");
+        $(".container").toggleClass("dark-mode");
+        $(".container").toggleClass("light-mode");
+        ColumnColors(); 
+        updateModeIcon(); 
+      });
+
+      
+      function ColumnColors() {
+        if ($("body").hasClass("dark-mode")) {
+          $(".column-light")
+            .removeClass("column-light")
+            .addClass("column-dark");
+        } else {
+          $(".column-dark")
+            .removeClass("column-dark")
+            .addClass("column-light");
+        }
+      }
+
+      
+      function updateModeIcon() {
+        var modeIcon = $("body").hasClass("dark-mode") ? "light_dark_icon.png" : "dark_light_icon.png";
+        $("#modeIcon").attr("src", modeIcon);
+      }
+
+    
+      ColumnColors();
+      updateModeIcon();
+
+      // Form
+      //Validate function
+      $("#taxForm").submit(function (event) {
+        event.preventDefault();
+        $(".error-icon").hide();
+        var income = $("#income").val();
+        if (!income || isNaN(income)) {
+          showErrorIcon("income");
+          return;
+        }
+        var extraIncome = $("#extraIncome").val();
+        if (extraIncome && isNaN(extraIncome)) {
+          showErrorIcon("extraIncome");
+          return;
+        }
+        var age = $("#age").val();
+        if (!age) {
+          showErrorIcon("age");
+          return;
+        }
+        var deductions = $("#deductions").val();
+        if (deductions && isNaN(deductions)) {
+          showErrorIcon("deductions");
+          return;
+        }
+
+        // Cal Tax
+        var taxRate;
+        var deductionLimit;
+        if (age === "<40") {
+          taxRate = 0.3;
+          deductionLimit = 200000;
+        } else if (age === ">=40 <60") {
+          taxRate = 0.4;
+          deductionLimit = 250000;
+        } else {
+          taxRate = 0.1;
+          deductionLimit = 300000;
+        }
+
+        var totalIncome =
+          parseInt(income) +
+          (extraIncome ? parseInt(extraIncome) : 0) -
+          (deductions ? parseInt(deductions) : 0);
+        
+      
+        var adjustedDeductions = deductions ? Math.min(parseInt(deductions), deductionLimit) : 0;
+
+        var taxableIncome = totalIncome > deductionLimit ? totalIncome - deductionLimit : 0;
+        var tax = taxableIncome * taxRate;
+
+        // Result 
+        $("#resultModal").modal("show");
+        $("#resultBody").html(
+          "<p>Total Tax: " + tax.toFixed(2) + " Lakhs</p>"
+        );
+      });
+      
+      function showErrorIcon(field) {
+        $("#" + field + "ErrorIcon").show();
+      }
+    });
+  </script>
+</body>
+</html>
